@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 from geopy.geocoders import Nominatim
 import folium
 from streamlit_folium import folium_static
+import json
 
 SP_SHEET     = 'tech0_01' 
 
@@ -38,7 +39,7 @@ def load_data_from_spreadsheet():
         "client_x509_cert_url": st.secrets["GOOGLE_CREDENTIALS"]["client_x509_cert_url"]
     }
 
-    credentials = Credentials.from_service_account_file(
+    credentials = Credentials.from_service_account_info(
         google_credentials,
         scopes=scopes
     )
