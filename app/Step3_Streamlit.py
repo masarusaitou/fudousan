@@ -10,10 +10,6 @@ from geopy.geocoders import Nominatim
 import folium
 from streamlit_folium import folium_static
 
-load_dotenv()
-
-SPREADSHEET_ID = os.getenv("SPREADSHEET_ID")
-PRIVATE_KEY_PATH = os.getenv("PRIVATE_KEY_PATH")
 SP_SHEET     = 'tech0_01' 
 
 if 'show_all' not in st.session_state:
@@ -24,20 +20,31 @@ def toggle_show_all():
 
 
 def load_data_from_spreadsheet():
-    SP_CREDENTIAL_FILE = PRIVATE_KEY_PATH
-
     scopes = [
         'https://www.googleapis.com/auth/spreadsheets',
         'https://www.googleapis.com/auth/drive'
     ]
 
+    google_credentials = {
+        "type": st.secrets["GOOGLE_CREDENTIALS"]["type"],
+        "project_id": st.secrets["GOOGLE_CREDENTIALS"]["project_id"],
+        "private_key_id": st.secrets["GOOGLE_CREDENTIALS"]["private_key_id"],
+        "private_key": st.secrets["GOOGLE_CREDENTIALS"]["private_key"],
+        "client_email": st.secrets["GOOGLE_CREDENTIALS"]["client_email"],
+        "client_id": st.secrets["GOOGLE_CREDENTIALS"]["client_id"],
+        "auth_uri": st.secrets["GOOGLE_CREDENTIALS"]["auth_uri"],
+        "token_uri": st.secrets["GOOGLE_CREDENTIALS"]["token_uri"],
+        "auth_provider_x509_cert_url": st.secrets["GOOGLE_CREDENTIALS"]["auth_provider_x509_cert_url"],
+        "client_x509_cert_url": st.secrets["GOOGLE_CREDENTIALS"]["client_x509_cert_url"]
+    }
+
     credentials = Credentials.from_service_account_file(
-        SP_CREDENTIAL_FILE,
+        google_credentials,
         scopes=scopes
     )
     gc = gspread.authorize(credentials)
 
-    SP_SHEET_KEY = SPREADSHEET_ID 
+    SP_SHEET_KEY = st.secrets["SP_SHEET_KEY"] 
     sh  = gc.open_by_key(SP_SHEET_KEY)
 
     worksheet = sh.worksheet(SP_SHEET) 
